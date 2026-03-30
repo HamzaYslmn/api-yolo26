@@ -1,6 +1,8 @@
 """Detection router — POST /api/yolo"""
 
+import asyncio
 import base64 as b64lib
+from functools import partial
 from typing import Optional
 
 import cv2
@@ -16,6 +18,12 @@ router = APIRouter(tags=["Detection"])
 class DetectionResult(BaseModel):
     count: int
     detections: list[dict]
+
+
+def _detect_sync(frame: np.ndarray, confidence: float) -> list[dict]:
+    """Sync YOLO detection (runs in thread)."""
+    results = yolo_detect(frame)
+    return [d for d in results if d["confidence"] >= confidence]
 
 
 @router.post("/yolo", response_model=DetectionResult, summary="Detect objects")
@@ -45,6 +53,8 @@ async def detect(
     if frame is None:
         raise HTTPException(400, "Invalid image.")
     
-    results = yolo_detect(frame)
-    detections = [d for d in results if d["confidence"] >= confidence]
+    # Run YOLO in thread to not block event loop
+    loop = asyncio.get_running_loop()
+    detections = await loop.run_in_executor(None, partial(_detect_sync, frame, confidence))
+    
     return DetectionResult(count=len(detections), detections=detections)
