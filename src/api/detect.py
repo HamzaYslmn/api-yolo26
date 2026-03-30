@@ -22,7 +22,7 @@ class DetectionResult(BaseModel):
 async def detect(
     file: Optional[UploadFile] = File(None),
     base64: Optional[str] = Form(None),
-    confidence: float = Form(0.25, ge=0.0, le=1.0),
+    confidence: float = Form(0.25, ge=0.25, le=1.0),
 ):
     """
     Detect objects. Provide either `file` (image upload) or `base64` (encoded image).

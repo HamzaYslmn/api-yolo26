@@ -27,7 +27,7 @@ def _get_model():
 def detect(frame) -> list[dict]:
     """Run inference and return all detections with class, confidence, and bbox (xyxy)."""
     model = _get_model()
-    results = model(frame, verbose=False)
+    results = model(frame, imgsz=512, verbose=False)
     names = getattr(model, "names", {})
     detections = []
     for box in results[0].boxes:
