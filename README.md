@@ -19,8 +19,8 @@ uv run uvicorn main:app --host 0.0.0.0 --port $PORT
 | Setting              | Value                                                      |
 | -------------------- | ---------------------------------------------------------- |
 | **Root Directory**   | `src`                                                      |
-| **Build Command**    | `pip install uv && uv sync`                                |
-| **Start Command**    | `uv run uvicorn main:app --host 0.0.0.0 --port $PORT`      |
+| **Build Command**    | `pip install uv && uv sync --active`                       |
+| **Start Command**    | `uv run --active uvicorn main:app --host 0.0.0.0 --port $PORT` |
 | **Instance Type**    | Choose based on your needs (Free tier works for testing)   |
 | **Python Version**   | 3.10+                                                      |
 

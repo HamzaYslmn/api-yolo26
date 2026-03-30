@@ -33,6 +33,12 @@ app = FastAPI(
 )
 
 
+@app.get("/", include_in_schema=False)
+async def root():
+    """Health check for Render."""
+    return {"status": "ok"}
+
+
 def _include_routers(directory: str, prefix: str):
     """Auto-discover and register routers from a directory."""
     for py in sorted((_SRC / directory).rglob("*.py")):
