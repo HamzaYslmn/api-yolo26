@@ -25,7 +25,7 @@ def _get_model():
 
 
 def detect(frame) -> list[dict]:
-    """Run inference and return all detections with class, confidence, and bbox."""
+    """Run inference and return all detections with class, confidence, and bbox (xyxy)."""
     model = _get_model()
     results = model(frame, verbose=False)
     names = getattr(model, "names", {})
@@ -35,11 +35,6 @@ def detect(frame) -> list[dict]:
         detections.append({
             "class": names.get(int(box.cls[0]), "unknown"),
             "confidence": round(float(box.conf[0]), 4),
-            "bbox": {
-                "x1": round(x1, 1),
-                "y1": round(y1, 1),
-                "x2": round(x2, 1),
-                "y2": round(y2, 1),
-            },
+            "bbox": [round(x1, 1), round(y1, 1), round(x2, 1), round(y2, 1)],
         })
     return detections

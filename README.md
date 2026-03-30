@@ -1,6 +1,6 @@
 # api-yolo26
 
-Free API test for YOLO26s object detection.
+Free API test for YOLO26s object detection (CPU-only).
 
 ---
 
@@ -9,25 +9,25 @@ Free API test for YOLO26s object detection.
 ### Start Command
 
 ```bash
-uvicorn main:app --host 0.0.0.0 --port $PORT
+uv run uvicorn main:app --host 0.0.0.0 --port $PORT
 ```
 
 > Run this command from the `src/` directory.
 
 ### Render Configuration
 
-| Setting              | Value                                                                                       |
-| -------------------- | ------------------------------------------------------------------------------------------- |
-| **Root Directory**   | `src`                                                                                       |
-| **Build Command**    | `pip install uv && uv sync`                                                                 |
-| **Start Command**    | `uvicorn main:app --host 0.0.0.0 --port $PORT`                                              |
-| **Instance Type**    | Choose based on your needs (Free tier works for testing)                                   |
-| **Python Version**   | 3.10+                                                                                       |
+| Setting              | Value                                                      |
+| -------------------- | ---------------------------------------------------------- |
+| **Root Directory**   | `src`                                                      |
+| **Build Command**    | `pip install uv && uv sync`                                |
+| **Start Command**    | `uv run uvicorn main:app --host 0.0.0.0 --port $PORT`      |
+| **Instance Type**    | Choose based on your needs (Free tier works for testing)   |
+| **Python Version**   | 3.10+                                                      |
 
 ### Environment Variables (if needed)
 
-| Variable | Description             |
-| -------- | ----------------------- |
+| Variable | Description                 |
+| -------- | --------------------------- |
 | `PORT`   | Automatically set by Render |
 
 ---
@@ -36,8 +36,18 @@ uvicorn main:app --host 0.0.0.0 --port $PORT
 
 ```bash
 cd src
-uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+uv sync
+uv run uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
+
+---
+
+## API Endpoints
+
+| Method | Endpoint      | Description                        |
+| ------ | ------------- | ---------------------------------- |
+| POST   | `/api/yolo`   | Detect objects (multipart or JSON) |
+| GET    | `/api/status` | System RAM & CPU status            |
 
 ---
 
