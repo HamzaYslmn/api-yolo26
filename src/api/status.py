@@ -42,7 +42,7 @@ class Memory(BaseModel):
 class Status(BaseModel):
     ok: bool
     memory: Memory
-    cpu_count: int
+    cpu_count: float
 
 
 @router.get("/status", response_model=Status, summary="System status")
