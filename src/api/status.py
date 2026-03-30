@@ -9,16 +9,25 @@ from fastapi import APIRouter
 router = APIRouter(tags=["Status"])
 
 
-def _read_cgroup(v2_path: str, v1_path: str) -> int | None:
+def _read_cgroup(v2_path: str, v1_path: str, is_cpu_max_period: bool = False) -> int | None:
     """Read value from cgroups (v2 first, then v1)."""
     for path in [v2_path, v1_path]:
         p = Path(path)
         if p.exists():
             val = p.read_text().strip()
+            
+            # cpu.max contains "quota period"
+            if path == "/sys/fs/cgroup/cpu.max" and " " in val:
+                parts = val.split()
+                val = parts[1] if is_cpu_max_period and len(parts) > 1 else parts[0]
+                
             if val not in ("max", ""):
-                v = int(val)
-                if v < 9223372036854771712:  # Not "unlimited"
-                    return v
+                try:
+                    v = int(val)
+                    if v < 9223372036854771712:  # Not "unlimited"
+                        return v
+                except ValueError:
+                    pass
     return None
 
 
@@ -47,8 +56,9 @@ async def status():
     used = _read_cgroup("/sys/fs/cgroup/memory.current", "/sys/fs/cgroup/memory/memory.usage_in_bytes")
     
     # Try to get CPU quota from cgroups
+    # MARK: added is_cpu_max_period parameter to properly fetch cfs_period_us from v2 cgroup 'cpu.max'
     cpu_quota = _read_cgroup("/sys/fs/cgroup/cpu.max", "/sys/fs/cgroup/cpu/cpu.cfs_quota_us")
-    cpu_period = _read_cgroup("/sys/fs/cgroup/cpu.max", "/sys/fs/cgroup/cpu/cpu.cfs_period_us") or 100000
+    cpu_period = _read_cgroup("/sys/fs/cgroup/cpu.max", "/sys/fs/cgroup/cpu/cpu.cfs_period_us", is_cpu_max_period=True) or 100000
     
     if limit and used:
         limit_mb = limit / (1024 * 1024)
