@@ -1,11 +1,11 @@
-"""YOLO26s object detection module."""
+"""YOLO26n object detection module."""
 
 import os
 import cv2
 
 cv2.setUseOptimized(True)
 
-MODEL_PATH = os.path.join(os.path.dirname(__file__), "yolo26s.pt")
+MODEL_PATH = os.path.join(os.path.dirname(__file__), "yolo26n.pt")
 _model = None
 
 
@@ -27,7 +27,7 @@ def _get_model():
 def detect(frame) -> list[dict]:
     """Run inference and return all detections with class, confidence, and bbox (xyxy)."""
     model = _get_model()
-    results = model(frame, imgsz=512, verbose=False)
+    results = model(frame, verbose=False)
     names = getattr(model, "names", {})
     detections = []
     for box in results[0].boxes:
