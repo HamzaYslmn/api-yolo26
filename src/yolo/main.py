@@ -1,4 +1,4 @@
-"""YOLO26n object detection module (ONNX Runtime)."""
+"""YOLO26s object detection module (ONNX Runtime)."""
 
 import asyncio
 import os
