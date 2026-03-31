@@ -14,6 +14,11 @@ from yolo import detect_async, is_url, download_image_safely
 router = APIRouter(tags=["Detection"])
 
 
+class DetectionResult(BaseModel):
+    count: int = Field(..., description="Number of detections")
+    detections: list[dict] = Field(..., description="Detected objects")
+
+
 @router.post("/yolo", summary="Detect objects")
 async def detect(
     file: Optional[UploadFile] = File(None),
