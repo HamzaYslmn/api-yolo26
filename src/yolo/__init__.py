@@ -1,4 +1,4 @@
-"""YOLO module — YOLO26s object detection."""
+"""YOLO module — YOLO26n object detection."""
 
 from .main import detect
 

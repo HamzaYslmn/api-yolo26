@@ -1,6 +1,13 @@
-# api-yolo26
+# 🚀 api-yolo26 (YOLO26n)
 
-Free API test for YOLO26s object detection (CPU-only).
+### 🔗 Live API Documentation
+**[https://api-yolo26.onrender.com/docs](https://api-yolo26.onrender.com/docs)**
+
+[![API Docs](https://img.shields.io/badge/API-Docs-blue?style=for-the-badge&logo=fastapi)](https://api-yolo26.onrender.com/docs)
+
+---
+
+Free API test for YOLO26n object detection (CPU-only).
 
 ---
 
@@ -52,8 +59,6 @@ uv run uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ---
 
 ## API Documentation
-
-Access the live API documentation here: [https://api-yolo26.onrender.com/docs](https://api-yolo26.onrender.com/docs)
 
 Once deployed locally, access the docs at:
 

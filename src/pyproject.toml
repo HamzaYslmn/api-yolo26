@@ -1,7 +1,7 @@
 [project]
 name = "api-yolo26"
 version = "1.0.0"
-description = "FastAPI + YOLO26s object detection API (CPU-only)"
+description = "FastAPI + YOLO26n object detection API (CPU-only)"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
