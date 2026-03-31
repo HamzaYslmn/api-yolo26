@@ -1,12 +1,13 @@
-"""Detection router — POST /api/yolo"""
+"""Detection router — POST /yolo"""
 
 import base64 as b64lib
-from typing import Optional, Union
+from typing import Literal, Optional
 
 import cv2
 import numpy as np
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
-from pydantic import BaseModel
+from fastapi.responses import Response
+from pydantic import BaseModel, Field
 
 from yolo import detect_async, is_url, download_image_safely
 
@@ -14,52 +15,45 @@ router = APIRouter(tags=["Detection"])
 
 
 class DetectionResult(BaseModel):
-    count: int
-    detections: list[dict]
-    preview_image: Optional[str] = None
+    count: int = Field(..., description="Number of detections")
+    detections: list[dict] = Field(..., description="Detected objects")
 
 
 @router.post("/yolo", response_model=DetectionResult, summary="Detect objects")
 async def detect(
-    file: Optional[UploadFile] = File(None, description="Image file upload"),
-    data: Optional[str] = Form(None, description="Image as base64 string or URL (http/https)"),
+    file: Optional[UploadFile] = File(None),
+    data: Optional[str] = Form(None),
     confidence: float = Form(0.25, ge=0.10, le=1.0),
-    preview: bool = Form(False),
+    format: Literal["json", "image"] = Form("json"),
 ):
     """
-    Detect objects in an image.
-    
-    Input options (provide one):
-    - `file`: Multipart file upload
-    - `data`: Base64 string (with/without data URI) or HTTP/HTTPS URL (max 5 MB)
+    Detect objects. Send `file` (upload) or `data` (base64/URL).
+    Set `format=image` to get annotated JPEG.
     """
-    raw: bytes
-    
-    if file is not None:
+    # Get raw bytes
+    if file:
         raw = await file.read()
-    elif data is not None:
+    elif data:
         data = data.strip()
         if is_url(data):
             raw = await download_image_safely(data)
         else:
-            img = data.split(",", 1)[-1] if "," in data else data
             try:
-                raw = b64lib.b64decode(img)
+                raw = b64lib.b64decode(data.split(",")[-1])
             except Exception:
-                raise HTTPException(400, "Invalid input. Provide a valid base64 string or URL.")
+                raise HTTPException(400, "Invalid base64.")
     else:
-        raise HTTPException(400, "Provide file upload or data (base64/URL).")
+        raise HTTPException(400, "Send file or data.")
     
-    # Decode image
+    # Decode
     frame = cv2.imdecode(np.frombuffer(raw, np.uint8), cv2.IMREAD_COLOR)
     if frame is None:
         raise HTTPException(400, "Invalid image.")
     
-    # Run detection (non-blocking)
-    detections, preview_img = await detect_async(frame, confidence, preview)
+    # Detect
+    detections, preview = await detect_async(frame, confidence, format == "image")
     
-    return DetectionResult(
-        count=len(detections), 
-        detections=detections, 
-        preview_image=preview_img
-    )
+    if format == "image" and preview:
+        return Response(content=preview, media_type="image/jpeg")
+    
+    return DetectionResult(count=len(detections), detections=detections)

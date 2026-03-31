@@ -1,7 +1,6 @@
 """YOLO26n object detection module."""
 
 import asyncio
-import base64 as b64lib
 import os
 from typing import Optional
 
@@ -49,16 +48,17 @@ def detect_with_preview(
     frame: np.ndarray, 
     confidence: float, 
     preview: bool = False
-) -> tuple[list[dict], Optional[str]]:
+) -> tuple[list[dict], Optional[bytes]]:
     """
     Run YOLO detection with optional annotated preview.
     
     This is a blocking/sync function — call via asyncio.to_thread().
+    Returns (detections, preview_jpeg_bytes or None).
     """
     results = detect(frame)
     valid = [d for d in results if d["confidence"] >= confidence]
     
-    preview_b64 = None
+    preview_bytes = None
     if preview:
         annotated = frame.copy()
         for d in valid:
@@ -68,15 +68,15 @@ def detect_with_preview(
             cv2.putText(annotated, label, (x1, max(y1 - 10, 10)), 
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
         _, buffer = cv2.imencode(".jpg", annotated)
-        preview_b64 = "data:image/jpeg;base64," + b64lib.b64encode(buffer).decode()
+        preview_bytes = buffer.tobytes()
         
-    return valid, preview_b64
+    return valid, preview_bytes
 
 
 async def detect_async(
     frame: np.ndarray, 
     confidence: float, 
     preview: bool = False
-) -> tuple[list[dict], Optional[str]]:
+) -> tuple[list[dict], Optional[bytes]]:
     """Async wrapper — runs detection in thread pool, non-blocking."""
     return await asyncio.to_thread(detect_with_preview, frame, confidence, preview)
