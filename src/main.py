@@ -16,7 +16,7 @@ _SRC = Path(__file__).resolve().parent
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     from yolo import init
-    log.info("Loading YOLO model...")
+    log.info("Loading ONNX model...")
     init()
     log.info("Model ready — server is up")
     yield
