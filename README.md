@@ -53,7 +53,9 @@ uv run uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
 ## API Documentation
 
-Once deployed, access the docs at:
+Access the live API documentation here: [https://api-yolo26.onrender.com/docs](https://api-yolo26.onrender.com/docs)
+
+Once deployed locally, access the docs at:
 
 - **Swagger UI**: `/docs`
 - **ReDoc**: `/redoc`
