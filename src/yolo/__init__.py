@@ -1,6 +1,7 @@
 """YOLO module — YOLO26n object detection."""
 
-from .main import detect
+from .main import detect, detect_with_preview, detect_async
+from .helpers import is_url, download_image_safely
 
 
 def init():
