@@ -28,6 +28,7 @@ app = FastAPI(
     description="by HamzaYslmn",
     version="1.0.0",
     lifespan=lifespan,
+    root_path="/api",
     docs_url="/docs",
     redoc_url="/redoc",
 )
@@ -54,7 +55,7 @@ def _include_routers(directory: str, prefix: str):
             log.error("Router load error %s: %s", mod_name, e)
 
 
-_include_routers("api", "/api")
+_include_routers("api", "")
 
 
 if __name__ == "__main__":
