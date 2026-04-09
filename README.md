@@ -1,9 +1,9 @@
 # 🚀 api-yolo26s (YOLO26s + ONNX Runtime)
 
 ### 🔗 Live API Documentation
-**[https://api-yolo26.onrender.com/api/docs](https://api-yolo26-5n7z.onrender.com/api/docs)**
+**[https://api-yolo26-5n7z.onrender.com/api/docs](https://api-yolo26-5n7z.onrender.com/api/docs)**
 
-[![API Docs](https://img.shields.io/badge/API-Docs-blue?style=for-the-badge&logo=fastapi)](https://api-yolo26.onrender.com/api/docs)
+[![API Docs](https://img.shields.io/badge/API-Docs-blue?style=for-the-badge&logo=fastapi)](https://api-yolo26-5n7z.onrender.com/api/docs)
 
 ---
 
